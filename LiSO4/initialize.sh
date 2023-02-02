@@ -8,9 +8,9 @@ cp ./water.xyz config/; cp ./params.ff config/;
 cp ./SO4.xyz config/; cp ./Li.xyz config/;
 cd config;
 
-~/software/lammps/la*22/fftool/fftool $N water.xyz $i Li.xyz $j SO4.xyz -r 50 > /dev/null
+~/software/lammps/la*22/fftool/fftool $N water.xyz $i Li.xyz $j SO4.xyz -r 55 > /dev/null
 ~/software/lammps/la*22/packmol*/packmol < pack.inp > packmol.out
-~/software/lammps/la*22/fftool/fftool $N water.xyz $i Li.xyz $j SO4.xyz -r 50 -l > /dev/null
+~/software/lammps/la*22/fftool/fftool $N water.xyz $i Li.xyz $j SO4.xyz -r 55 -l > /dev/null
 
 rm -f in.lmp
 rm -f *.xyz pa*
