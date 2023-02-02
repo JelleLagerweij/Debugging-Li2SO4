@@ -6,7 +6,7 @@ mass 2 1.008 # Hw
 mass 3 6.891  # Li  -0.01, which went to ghost
 mass 4 0.05 # m ghost of lithium
 mass 5 0.05 # S  Center site without weight
-mass 6 24.0027 # Os (added sulfur weight)
+mass 6 24.00315 # Os (added sulfur weight)
 
 
 pair_style lj/cut/tip4p/long 1 2 1 1 0.1546 10.0
