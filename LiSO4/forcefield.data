@@ -45,12 +45,12 @@ pair_coeff 6 6 0.200143 3.6500     # Os-Os
 
 bond_style  harmonic
 bond_coeff 1 2000 0.9572           # Ow-Hw
-bond_coeff 2 1000 0.1		   # Li-m
+bond_coeff 2 1000 0.5		   # Li-m
 bond_coeff 3 1000 1.490		   # S-Os
 
 angle_style harmonic
 angle_coeff 1 200 104.52           # H-Ow-H
-angle_coeff 2 200 109.47           # Os-S-Os
+angle_coeff 2 200 109.5           # Os-S-Os
 
 #dihedral_style none 
 #improper_style none
