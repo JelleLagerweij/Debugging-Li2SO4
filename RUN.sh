@@ -1,6 +1,6 @@
 #!/bin/bash
-N = $(expr 1000)	# Number of water molecules
-j = $(expr 18)	# Number of Li2SO4's per 1m solution
+N=$(expr 1000)	# Number of water molecules
+j=$(expr 18)	# Number of Li2SO4's per 1m solution
 
 for Temp in 298.15 232.15
 do
@@ -14,7 +14,6 @@ do
 
 		# Coppying all needed files to run folder (alphabetical order)
 		cp ../../input/forcefield.data .
-		cp ../../input/initialize.sh .
 		cp ../../input/Li.xyz .
 		cp ../../input/params.ff .
 		cp ../../input/runMD .
