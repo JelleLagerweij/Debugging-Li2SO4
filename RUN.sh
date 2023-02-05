@@ -28,7 +28,7 @@ do
 		sed -i 's/T_VALUE/'$Temp'/' simulation_preprocessing.in
 
 		# Set runMD variables
-		sed -i 's/JOB_NAME/Li2SO4 T='$T' m='$m'/' runMD
+		sed -i 's/JOB_NAME/Li2SO4 T is '$Temp%.*' m is'$m'/' runMD
 		sed -i 's/INPUT/simulation_preprocessing.in/' runMD
 
 		# Create config folder with right files
