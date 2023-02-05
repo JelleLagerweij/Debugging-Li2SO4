@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=NAME
+#SBATCH --job-name=JOB_NAME
 #SBATCH --exclusive
 #SBATCH -n 48
 #SBATCH -t 24:00:00

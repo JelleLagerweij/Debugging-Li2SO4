@@ -28,7 +28,7 @@ do
 		sed -i 's/T_VALUE/'$Temp'/' simulation_preprocessing.in
 
 		# Set runMD variables
-		sed -i 's/JOB_NAME/preproccessing/' runMD
+		sed -i 's/JOB_NAME/Li2SO4 T='$T' m='$m'/' runMD
 		sed -i 's/INPUT/simulation_preprocessing.in/' runMD
 
 		# Create config folder with right files
@@ -55,7 +55,9 @@ do
 		cp data.lmp ../data.lmp
 		cd ..
 		rm -r config
-		#sbatch runMD
+
+		# Commiting run and reporting that
+		sbatch runMD
 		echo "Runtask commited: T="$Temp", m="$m"."
 		cd ..
 	done
