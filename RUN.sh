@@ -1,8 +1,9 @@
 #!/bin/bash
-N=$(expr 1000)	# Number of water molecules
-j=$(expr 18)	# Number of Li2SO4's per 1m solution
+N_wat=$(expr 1000)	# Number of water molecules
+N_salt=$(expr 18)	# Number of Li2SO4's per 1m solution
+n=$(expr 2)			# Number of Li's per salt molecule'
 
-for Temp in 298.15 232.15
+for Temp in 298.15 323.15
 do
 	mkdir temp_${Temp%.*}
 	cd temp_${Temp%.*}
@@ -30,7 +31,7 @@ do
 		sed -i 's/JOB_NAME/preproccessing/' runMD
 		sed -i 's/INPUT/simulation_preprocessing.in/' runMD
 
-		# Create initial configuration using fftool and packmol
+		# Create config folder with right files
 		mkdir config
 		mv ./water.xyz config/
 		mv ./params.ff config/
@@ -38,9 +39,14 @@ do
 		mv ./Li.xyz config/
 		cd config
 
-		~/software/lammps/la*22/fftool/fftool $N water.xyz 2*$j*$m Li.xyz $j*$m SO4.xyz -r 55 > /dev/null
+		# compute total number of Li and SO4
+		N_Li=$(($m*$N_wat*$n))
+		N_SO4=$(($m*$N_wat))
+
+		# Create initial configuration using fftool and packmol
+		~/software/lammps/la*22/fftool/fftool $N_wat water.xyz $N_Li Li.xyz $N_SO4 SO4.xyz -r 55 > /dev/null
 		~/software/lammps/la*22/packmol*/packmol < pack.inp > packmol.out
-		~/software/lammps/la*22/fftool/fftool $N water.xyz 2*$j*$m Li.xyz $j*$m SO4.xyz -r 55 -l > /dev/null
+		~/software/lammps/la*22/fftool/fftool $N_wat water.xyz $N_Li Li.xyz $N_SO4 SO4.xyz -r 55 -l > /dev/null
 
 		# removing the force data from packmol as I use my own forcefield.data. copy data.lmp remove rest
 		rm -f in.lmp
@@ -49,7 +55,7 @@ do
 		cp data.lmp ../data.lmp
 		cd ..
 		rm -r config
-		sbatch runMD
+		#sbatch runMD
 
 		cd ..
 	done
