@@ -1,6 +1,6 @@
 #!/bin/bash
-N = 1000	# Number of water molecules
-j = 18		# Number of Li2SO4's per 1m solution
+N = $(expr 1000)	# Number of water molecules
+j = $(expr 18)	# Number of Li2SO4's per 1m solution
 
 for Temp in 298.15 232.15
 do
