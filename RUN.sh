@@ -51,5 +51,9 @@ do
 		cd ..
 		rm -r config
 		sbatch runMD
+
+		cd ..
 	done
+
+	cd ..
 done
