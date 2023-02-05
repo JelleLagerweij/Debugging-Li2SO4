@@ -40,8 +40,8 @@ do
 		cd config
 
 		# compute total number of Li and SO4
-		N_Li=$(($m*$N_wat*$n))
-		N_SO4=$(($m*$N_wat))
+		N_Li=$(($m*$N_salt*$n))
+		N_SO4=$(($m*$N_salt))
 
 		# Create initial configuration using fftool and packmol
 		~/software/lammps/la*22/fftool/fftool $N_wat water.xyz $N_Li Li.xyz $N_SO4 SO4.xyz -r 55 > /dev/null
@@ -56,7 +56,7 @@ do
 		cd ..
 		rm -r config
 		#sbatch runMD
-
+		echo "Runtask commited: T="$Temp", m="$m"."
 		cd ..
 	done
 
