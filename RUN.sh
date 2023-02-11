@@ -31,7 +31,7 @@ do
 
 			# Commiting run and reporting that
 			sbatch runMD
-			echo "Runtask commited: T="$Temp", m="$m"."
+			echo "Runtask commited: T="$Temp", m="$m", run " $i"."
 			cd ..
 		done
 		cd ..
