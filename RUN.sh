@@ -16,9 +16,9 @@ do
 			cd run_$i
 
 			# Coppying all needed files to run folder (alphabetical order)
-			cp ../../../../input/runMD .
-			cp ../../../../input/simulation.in .
-			cp ../../../../input/temp_${Temp%.*}/molality_$m/1.restart
+			cp ../../../input/runMD .
+			cp ../../../input/simulation.in .
+			cp ../../../input/temp_${Temp%.*}/molality_$m/1.restart
 
 			# Set simulation_preprocessing.in file values
 			randomNumber=$(shuf -i 1-100 -n1)
