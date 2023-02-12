@@ -13,7 +13,7 @@ variable RandomSeed equal R_VALUE # The random seed for velocity
 variable tstep equal 2.0      # 1fs 
 variable Ninvtpre equal 1000 # Pre-initialize the NVT ensemble (very small timesteps)
 variable Ninvt equal 250000   # Initialize the NVT ensemble (0.25 ns)
-variable Nrun equal 30000000  # production in the NVT ensemble (Transport properties) 30 ns
+variable Nrun equal Nrun_VALUE  # production in the NVT ensemble (Transport properties) 30 ns
 variable Nf equal 100000      # Nfreq (fix ave/time and thermo)
 variable Ne equal  1          # Nevery (fix ave/time)
 variable Nr equal ${Nf}/${Ne} # Nrepeat (fix ave/time)
