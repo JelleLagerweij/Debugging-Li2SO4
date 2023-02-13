@@ -1,8 +1,5 @@
 #!/bin/bash
 
 
-folder="../../stored/"$1
-
-cp -r ../run_FOLDER folder/
-
-
+mkdir -p ../../stored/$1/
+cp -r ../run_FOLDER ../../stored/$1/

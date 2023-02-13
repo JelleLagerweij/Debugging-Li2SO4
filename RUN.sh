@@ -6,7 +6,7 @@ m=$(expr 3)				# Concentration file to use
 #Does it work now?
 
 
-for folder in tests_times
+for folder in running
 do
 	mkdir $folder
 	cd $folder
