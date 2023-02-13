@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for Nrun in 5000000 10000000 15000000
+for Nrun in 5000001
 do
 	mkdir time_$Nrun
 	cd time_$Nrun
