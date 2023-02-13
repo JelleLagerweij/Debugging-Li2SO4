@@ -69,7 +69,7 @@ unfix integrate
 fix integrate all rigid/nvt/small molecule temp ${Temp} ${Temp} 100.0
 
 timestep ${tstep}
-#run ${Ninvt}
+run ${Ninvt}
 reset_timestep 0
 
 #################### 2) Production in NVT ensemble #####################
@@ -109,10 +109,10 @@ compute rdfs all rdf/ext Nbin ${binnum} Nwrite ${Nrdfw}
 fix f4 all ave/time 1 1 ${Nrdfe} c_rdfs
 
 run ${Nrun}
-shell ./copy_files.sh 10
+shell bash copy_files.sh 10
 
 run ${Nrun}
-shell ./copy_files.sh 20
+shell bash copy_files.sh 20
 
 run ${Nrun}
 
