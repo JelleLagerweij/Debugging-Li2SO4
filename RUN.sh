@@ -28,6 +28,9 @@ do
 		sed -i 's/T_VALUE/'$Temp'/' simulation.in
 		sed -i 's/Nrun_VALUE/'$Nrun'/' simulation.in
 
+		# Set filder location
+		sed -i 's/run_FOLDER/'$i'/' copy_files.sh
+
 		# Set runMD variables
 		sed -i 's/JOB_NAME/Li2SO4 T is '${Temp%.*}' m is '$m' run '$i'/' runMD
 		sed -i 's/INPUT/simulation.in/' runMD
