@@ -1,9 +1,9 @@
 #!/bin/bash
 runfile=$(expr runMD_H)	# Server where to run
-Nrun=$(expr 1000000)			# 2 ns of data per step
+Nrun=$(expr 1000000)			# 2*Nrun fs = 2 ns of data per step
 Temp=$(expr 298.15)		# Temperature in K
 m=$(expr 3)				# Concentration file to use
-
+# How is it now?
 
 for folder in running
 do

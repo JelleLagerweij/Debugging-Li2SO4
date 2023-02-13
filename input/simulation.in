@@ -173,9 +173,6 @@ run ${Nrun}
 shell bash copy_files.sh 44ns
 
 run ${Nrun}
-<<<<<<< HEAD
-shell bash copy_files.sh 30
-=======
 shell bash copy_files.sh 46ns
 
 run ${Nrun}
@@ -183,6 +180,4 @@ shell bash copy_files.sh 48ns
 
 run ${Nrun}
 shell bash copy_files.sh 50ns
->>>>>>> dd3e4343dc41c384d849cf96bc1c4c04ffdd3073
-
 quit
