@@ -1,5 +1,5 @@
 #!/bin/bash
-runfile=$(expr runMD_D)	# Server where to run
+runfile=$(expr runMD_H)	# Server where to run
 Nrun=$(expr 500)			# 1 ns of data per step
 Temp=$(expr 298.15)		# Temperature in K
 m=$(expr 3)				# Concentration file to use
