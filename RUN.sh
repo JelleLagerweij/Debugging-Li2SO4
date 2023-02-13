@@ -11,7 +11,7 @@ do
 	mkdir $folder
 	cd $folder
 
-	for i in 1
+	for i in 1 2 3
 	do
 		mkdir $i
 		cd $i
