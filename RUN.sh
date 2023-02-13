@@ -1,9 +1,8 @@
 #!/bin/bash
 runfile=$(expr runMD_H)	# Server where to run
-Nrun=$(expr 500)			# 1 ns of data per step
+Nrun=$(expr 1000000)			# 2 ns of data per step
 Temp=$(expr 298.15)		# Temperature in K
 m=$(expr 3)				# Concentration file to use
-#Does it work now?
 
 
 for folder in running
@@ -11,7 +10,7 @@ do
 	mkdir $folder
 	cd $folder
 
-	for i in 1 2 3
+	for i in 1 2 3 4
 	do
 		mkdir $i
 		cd $i
