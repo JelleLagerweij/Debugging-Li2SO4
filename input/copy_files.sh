@@ -1,8 +1,7 @@
 #!/bin/bash
-runfile = runMD_D	# Server where to run
-Nrun = 500			# 1 ns of data per step
-Temp = 298.15		# Temperature in K
-m = 3				# Concentration file to use
+Nrun = 500		# 1 ns of data per step
+Temp = 298.15
+m = 3
 
 
 for folder in tests_times
@@ -10,16 +9,15 @@ do
 	mkdir $folder
 	cd $folder
 
-	for i in 1
+	for i in 1 2 3 4 5
 	do
-		mkdir $i
-		cd $i
+		mkdir run_$i
+		cd run_$i
 
 		# Coppying all needed files to run folder (alphabetical order)
-		cp ../../input/$runfile runMD
-		cp ../../input/simulation.in .
-		cp ../../input/restarts/temp_${Temp%.*}/molality_$m/1.restart .
-		cp ../../input/copy_files.sh .
+		cp ../../../../input/runMD .
+		cp ../../../../input/simulation.in .
+		cp ../../../../input/restarts/temp_${Temp%.*}/molality_$m/1.restart .
 
 		# Set simulation_preprocessing.in file values
 		randomNumber=$(shuf -i 1-100 -n1)
