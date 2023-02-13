@@ -1,7 +1,8 @@
 #!/bin/bash
 
 
-folder=(exp ../../stored/$1/run_VALUE)
+folder="../../stored/"$1
 
-echo folder
+cp -r ../run_FOLDER folder/
+
 
