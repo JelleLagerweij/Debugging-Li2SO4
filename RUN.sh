@@ -1,8 +1,8 @@
 #!/bin/bash
-runfile = runMD_D	# Server where to run
-Nrun = 500			# 1 ns of data per step
-Temp = 298.15		# Temperature in K
-m = 3				# Concentration file to use
+runfile=$(runMD_D)	# Server where to run
+Nrun=$(500)			# 1 ns of data per step
+Temp=$(298.15)		# Temperature in K
+m=$(3)				# Concentration file to use
 #Does it work now?
 
 
