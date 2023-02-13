@@ -115,9 +115,6 @@ run ${Nrun}
 shell bash copy_files.sh 20
 
 run ${Nrun}
-
-run ${Nrun}
-
-run ${Nrun}
+shell bash copy_files.sh 30
 
 quit
