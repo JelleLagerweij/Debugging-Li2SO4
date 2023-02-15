@@ -69,9 +69,9 @@ class PP_OCTP:
         self.cmap = plt.get_cmap("tab10")
 
     def filenames(self, Default=False, density=False, volume=False,
-                  total_E=False, temperature=False, pressure=False,
-                  Diff_self=False, Diff_Onsag=False, viscosity=False,
-                  T_conduc=False, rdf=False, log=False):
+                  total_E=False, poten_E=False, temperature=False,
+                  pressure=False, Diff_self=False, Diff_Onsag=False,
+                  viscosity=False, T_conduc=False, rdf=False, log=False):
         """
         This function sets the file names of the output files that have to be
         read. The default file names are set when the class is initiate.
@@ -91,6 +91,9 @@ class PP_OCTP:
         total_E : string, optional
             Sets the name of the total energy file, tracked during the OCTP
             production. The default is "TotalE.dat".
+        poten_E : string, optional
+            Sets the name of the potential energy file, tracked during the OCTP
+            production. The default is "PotenE.dat".
         temperature : string, optional
             Sets the name of the temperature file, tracked during the OCTP
             production. The default is "temperature.dat".
@@ -125,6 +128,7 @@ class PP_OCTP:
             self.f_D = '/density.dat'  # Density in g/cm^3
             self.f_V = '/volume.dat'  # Volume in A^3 = 1e-30 m^3
             self.f_totE = '/TotalE.dat'  # Total energy in kcal
+            self.f_potE = '/PotenE.dat'  # Total energy in kcal
             self.f_T = '/temperature.dat'  # Temperature in K
             self.f_p = '/pressure.dat'  # Pressure in atm
             self.f_Ds = '/selfdiffusivity.dat'
@@ -142,6 +146,9 @@ class PP_OCTP:
 
         if total_E is not False:
             self.f_totE = '/' + total_E
+
+        if poten_E is not False:
+            self.f_potE = '/' + poten_E
 
         if temperature is not False:
             self.f_T = '/' + temperature
@@ -284,6 +291,22 @@ class PP_OCTP:
             T_l[i] = unc.ufloat(np.mean(T_i), np.std(T_i))
             T[i] = np.mean(T_i)
 
+            if self.plotting is True:
+                t = np.array(pd.read_table(self.f_file[i]+self.f_p,
+                                           delimiter=' ', header=None,
+                                           skiprows=2))[:, 0]
+                plt.figure('temperature')
+                plt.plot(t, T_i, marker=".", label=self.f_runs[i],
+                         color=self.cmap(i))
+
+        if self.plotting is True:
+            plt.figure('temperature')
+            plt.title('temperature')
+            plt.grid('on')
+            plt.ylabel('temperature(K)')
+            plt.xlabel('time in fs')
+            plt.legend()
+
         # Storing the results to be available per run in class.
         self.T = T
 
@@ -340,9 +363,96 @@ class PP_OCTP:
                                          skiprows=2))[:, 1]
             p_l[i] = unc.ufloat(np.mean(p_i)*co.atm, np.std(p_i)*co.atm)
 
+            if self.plotting is True:
+                t = np.array(pd.read_table(self.f_file[i]+self.f_p,
+                                           delimiter=' ', header=None,
+                                           skiprows=2))[:, 0]
+                plt.figure('pressure')
+                plt.plot(t, p_i*co.atm, marker=".", label=self.f_runs[i],
+                         color=self.cmap(i))
+
+        if self.plotting is True:
+            plt.figure('pressure')
+            plt.title('pressure')
+            plt.grid('on')
+            plt.ylabel('pressure/(Pa)')
+            plt.xlabel('time in fs')
+            plt.legend()
+
         # Computing total mean and handling uncertainties correctly.
         p_ave, p_sig = np.mean(p_l).n, np.mean(p_l).s
         self.results['Pressure/[Pa]'] = [p_ave, p_sig, len(self.f_file)]
+
+    def tot_energy(self, unit_conversion=4.184):
+        fact = unit_conversion
+
+        # Run mandatory properties run if that has not occured yet.
+        if self.mandatory_ran is False:
+            self.mandatory_properties()
+
+        E_l = [None]*len(self.f_file)
+        for i in range(len(self.f_file)):
+            # Pressure
+            E_i = np.array(pd.read_table(self.f_file[i]+self.f_totE,
+                                         delimiter=' ', header=None,
+                                         skiprows=2))[:, 1]
+            E_l[i] = unc.ufloat(np.mean(E_i)*fact, np.std(E_i)*fact)
+
+            if self.plotting is True:
+                t = np.array(pd.read_table(self.f_file[i]+self.f_totE,
+                                           delimiter=' ', header=None,
+                                           skiprows=2))[:, 0]
+                plt.figure('total energy')
+                plt.plot(t, E_i*fact, marker=".", label=self.f_runs[i],
+                         color=self.cmap(i))
+
+        if self.plotting is True:
+            plt.figure('total energy')
+            plt.title('total energy')
+            plt.grid('on')
+            plt.ylabel('total energy/(kJ/mol)')
+            plt.xlabel('time in fs')
+            plt.legend()
+
+        # Computing total mean and handling uncertainties correctly.
+        E_ave, E_sig = np.mean(E_l).n, np.mean(E_l).s
+        self.results['Tot Energy/[kJ/mol]'] = [E_ave, E_sig, len(self.f_file)]
+
+    def pot_energy(self, unit_conversion=4.184):
+        fact = unit_conversion
+
+        # Run mandatory properties run if that has not occured yet.
+        if self.mandatory_ran is False:
+            self.mandatory_properties()
+
+        E_l = [None]*len(self.f_file)
+        for i in range(len(self.f_file)):
+            # Pressure
+            E_i = np.array(pd.read_table(self.f_file[i]+self.f_potE,
+                                         delimiter=' ', header=None,
+                                         skiprows=2))[:, 1]
+            E_l[i] = unc.ufloat(np.mean(E_i)*fact, np.std(E_i)*fact)
+
+            if self.plotting is True:
+                t = np.array(pd.read_table(self.f_file[i]+self.f_totE,
+                                           delimiter=' ', header=None,
+                                           skiprows=2))[:, 0]
+                plt.figure('potential energy')
+                plt.plot(t, E_i*fact, marker=".", label=self.f_runs[i],
+                         color=self.cmap(i))
+
+        if self.plotting is True:
+            plt.figure('potential energy')
+            plt.title('potential energy')
+            plt.grid('on')
+            plt.ylabel('potential energy/(kJ/mol)')
+            plt.xlabel('time in fs')
+            plt.legend()
+
+        # Computing total mean and handling uncertainties correctly.
+        E_ave, E_sig = np.mean(E_l).n, np.mean(E_l).s
+        self.results['Potential Energy/[kJ/mol]'] = [E_ave, E_sig,
+                                                     len(self.f_file)]
 
     def density(self, unit_conversion=1000):
         """
@@ -739,7 +849,7 @@ class PP_OCTP:
 
         """
         if location is False:
-            location = self.f_folder
+            location = self.f_folder + '/'
         self.results.to_csv(location+name, index=False)
 
     def diff_calculator(self, t, MSD_in, m=False):
