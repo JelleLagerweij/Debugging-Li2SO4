@@ -1,48 +1,4 @@
 LAMMPS (23 Jun 2022 - Update 1)
-####################################################
-# Preprocessing Li2SO4 in water
-#################### SETTING UP ####################
-units real
-dimension 3
-newton on
-boundary p p p
-atom_style full
-
-#################### VARIABLES ####################
-variable Temp equal 323.15    # Temperature in K
-variable Pres equal 5.0       # Pressure in atm.
-
-variable RandomSeed equal 94 # The random seed for velocity
-variable tstep equal 1      # 1fs
-variable Ninptpre equal 10000 # Pre-initialize the NPT ensemble (very small timesteps)
-variable Ninpt equal 10000000  # Initialize the NPT ensemble
-variable Npnpt equal 10000000  # Production in the NPT ensemble (volume)
-variable Ninvtpre equal 10000 # Pre-initialize the NVT ensemble (very small timesteps)
-variable Ninvt equal 500000   # Initialize the NVT ensemble
-variable Nrun equal 50000     # production in the NVT ensemble (Transport properties) 1ns
-variable Nf equal 1000         # Nfreq (fix ave/time and thermo)
-variable Ne equal  1         # Nevery (fix ave/time)
-variable Nr equal ${Nf}/${Ne} # Nrepeat (fix ave/time)
-variable Nr equal 1000/${Ne} 
-variable Nr equal 1000/1 
-variable NBR equal ${Npnpt}/100 # Block averaging for density (NPT)
-variable NBR equal 10000000/100 
-variable Nd equal ${Npnpt}/10 # Frequency of outputting positions of atoms in the NVT ensemble
-variable Nd equal 10000000/10 
-
-variable nb equal 10          # Number of blocks (fix ordern)
-variable nbe equal 20         # Number of block elements (fix ordern)
-variable Nvisc equal 5        # Nevery for viscosity (fix ordern: sample data at (Nvisc*2))
-variable Ncond equal 5        # Nevery for Tconductivity (fix ordern: sample data at (Ncond*2))
-variable Ndiff equal 1000     # Nevery for diffusivity (fix ordern: sample data at (Ndiff))
-variable Nwrit equal 100000   # Nwrite for transport properties (fix ordern: write every (Nwrit))
-
-variable Nrdfe equal 1000     # Nevery for RDF (fix ave/time)
-variable Nrdfw equal 1000     # Nwrite for RDF (compute rdf/ext: write every (Nrdfw*Nrdfe))
-variable binnum equal 2000    # Number of bins for RDF
-
-#################### ATOM DEFINITION and FORCEFIELD ####################
-read_data ./data.lmp                     # read the positions
 Reading data file ...
   orthogonal box = (0 0 0) to (32.73665 32.73665 32.73665)
   2 by 4 by 4 MPI processor grid
@@ -65,129 +21,24 @@ Finding 1-2 1-3 1-4 neighbors ...
      4 = max # of special neighbors
   special bonds CPU = 0.001 seconds
   read_data CPU = 0.017 seconds
-include ./forcefield.data                # read the force field
-#--------INTERMOLECULAR POTENTIAL -------------------#
-# ---------------Developed for Li2SO4 in water (tip4p/2005) system-----#
-
-mass 1 15.9994 # Ow
-mass 2 1.008 # Hw
-mass 3 6.891  # Li  -0.01, which went to ghost
-mass 4 0.05 # m ghost of lithium
-mass 5 0.1 # S  Center site without weight
-mass 6 23.99065 # Os (added sulfur weight)
-
-
-pair_style lj/cut/tip4p/long 1 2 1 1 0.1546 10.0
-kspace_style pppm/tip4p 1.0e-5
-pair_modify mix arithmetic tail yes # ATC and Lorentz-Berthelot combining rules
-
-#-----------------Combinations----------------------------
-# atomtype atomtype epsilon sigma
-
-pair_coeff 1 1 0.185200 3.1589     # Ow-Ow
-pair_coeff 1 2 0.000000 0.0000     # Ow-Hw
-pair_coeff 1 3 0.167459 2.12       # Ow-Li
-pair_coeff 1 4 0.000000 0.0000     # Ow-m
-pair_coeff 1 5 0.215246 3.35445    # Ow-S  COMPUTE BY HAND LB mix
-pair_coeff 1 6 0.150335 3.40445    # Ow-Os
-
-pair_coeff 2 2 0.000000 0.0000     # Hw-Hw
-pair_coeff 2 3 0.000000 0.0000     # Hw-Li
-pair_coeff 2 4 0.000000 0.0000     # Hw-m
-pair_coeff 2 5 0.000000 0.0000     # Hw-S
-pair_coeff 2 6 0.000000 0.0000     # Hw-Os
-
-pair_coeff 3 3 0.103989 1.4397     # Li-Li
-pair_coeff 3 4 0.000000 0.0000     # Li-m
-pair_coeff 3 5 0.161291 2.49485    # Li-S   COMPUTE BY HAND LB mix
-pair_coeff 3 6 0.192067 2.844850   # Li-Os
-
-pair_coeff 4 4 0.000000 0.0000     # m-m
-pair_coeff 4 5 0.000000 0.0000     # m-S
-pair_coeff 4 6 0.000000 0.0000     # m-Os
-
-pair_coeff 5 5 0.250167 3.5500     # S-S
-pair_coeff 5 6 0.223762 3.6000     # S-Os  CHECK BY HAND LB mix
-
-pair_coeff 6 6 0.200143 3.6500     # Os-Os
-
-bond_style  harmonic
-bond_coeff 1 2000 0.9572           # Ow-Hw
-bond_coeff 2 1000 0.5		   # Li-m
-bond_coeff 3 1000 1.490		   # S-Os
-
-angle_style harmonic
-angle_coeff 1 200 104.52           # H-Ow-H
-angle_coeff 2 200 109.5           # Os-S-Os
-
-#dihedral_style none
-#improper_style none
-
-set type 1 charge -1.1128          # O
 Setting atom values ...
   1000 settings made for charge
-set type 2 charge +0.5564          # OH
 Setting atom values ...
   2000 settings made for charge
-set type 3 charge +0.8500          # Li
 Setting atom values ...
   108 settings made for charge
-set type 4 charge 0		   # m
 Setting atom values ...
   108 settings made for charge
-set type 5 charge +0.9000          # S
 Setting atom values ...
   54 settings made for charge
-set type 6 charge -0.6500          # Os
 Setting atom values ...
   216 settings made for charge
-
-
-#################### INITIALIZATION ####################
-# groups for the central atoms of water (O)
-
-group wat type 1		# O water
 1000 atoms in group wat
-group Li type 3			# Lithium atom
 108 atoms in group Li
-group S type 5			# S sulfite group centre
 54 atoms in group S
-
-# neigbor lists
-neighbor 2.0 bin
-neigh_modify every 1 delay 0 check yes
-
-# velocity-Verlet integrator
-run_style verlet
-
-# initializing velocities
-velocity all create ${Temp} ${RandomSeed}
-velocity all create 323.15 ${RandomSeed}
-velocity all create 323.15 94
-
-# rate of writing thermal properties to the log file
-thermo_style custom step density temp press etotal
-thermo_modify flush yes
-thermo ${Nf}
-thermo 1000
-
-#################### 2) Initialize the NPT ensemble ####################
-######### Go to the correct temperature now ant initiate that ##########
-fix integrate all rigid/npt/small molecule temp ${Temp} ${Temp} 10.0 iso ${Pres} ${Pres} 100.0
-fix integrate all rigid/npt/small molecule temp 323.15 ${Temp} 10.0 iso ${Pres} ${Pres} 100.0
-fix integrate all rigid/npt/small molecule temp 323.15 323.15 10.0 iso ${Pres} ${Pres} 100.0
-fix integrate all rigid/npt/small molecule temp 323.15 323.15 10.0 iso 5 ${Pres} 100.0
-fix integrate all rigid/npt/small molecule temp 323.15 323.15 10.0 iso 5 5 100.0
   create bodies CPU = 0.001 seconds
   1162 rigid bodies with 3486 atoms
   1.4900075 = max distance from body owner to body atom
-
-# add dump trajectory
-
-# Initializing the whole system with very small timesteps in the NPT ensemble
-timestep 0.001
-run ${Ninptpre}
-run 10000
 PPPM initialization ...
   extracting TIP4P info from pair style
   using 12-bit tables for long-range coulomb (../kspace.cpp:342)
@@ -211,6 +62,10 @@ Neighbor list info ...
       pair build: half/bin/newton
       stencil: half/bin/3d
       bin: standard
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 0
+  Time step     : 0.001
 Per MPI rank memory allocation (min/avg/max) = 15.47 | 15.5 | 15.53 Mbytes
    Step        Density          Temp          Press          TotEng    
          0   1.1336932      326.33161      433144.15      8535.9434    
@@ -253,9 +108,6 @@ Ave neighs/atom = 369.32817
 Ave special neighs/atom = 2.0929432
 Neighbor list builds = 2
 Dangerous builds = 0
-timestep 0.01
-run ${Ninptpre}
-run 10000
 PPPM initialization ...
   extracting TIP4P info from pair style
   using 12-bit tables for long-range coulomb (../kspace.cpp:342)
@@ -267,6 +119,10 @@ PPPM initialization ...
   using double precision KISS FFT
   3d grid and FFT values/proc = 5175 1024
 Generated 0 of 15 mixed pair_coeff terms from arithmetic mixing rule
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 10000
+  Time step     : 0.01
 Per MPI rank memory allocation (min/avg/max) = 15.5 | 15.52 | 15.54 Mbytes
    Step        Density          Temp          Press          TotEng    
      10000   1.0443867      2021.1732      11531.491      1950.497     
@@ -309,9 +165,6 @@ Ave neighs/atom = 386.61331
 Ave special neighs/atom = 2.0929432
 Neighbor list builds = 17
 Dangerous builds = 0
-timestep 0.1
-run ${Ninptpre}
-run 10000
 PPPM initialization ...
   extracting TIP4P info from pair style
   using 12-bit tables for long-range coulomb (../kspace.cpp:342)
@@ -323,6 +176,10 @@ PPPM initialization ...
   using double precision KISS FFT
   3d grid and FFT values/proc = 4950 960
 Generated 0 of 15 mixed pair_coeff terms from arithmetic mixing rule
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 20000
+  Time step     : 0.1
 Per MPI rank memory allocation (min/avg/max) = 15.47 | 15.5 | 15.53 Mbytes
    Step        Density          Temp          Press          TotEng    
      20000   1.1347386      564.39108      3623.0467     -23661.099    
@@ -365,9 +222,6 @@ Ave neighs/atom = 407.48164
 Ave special neighs/atom = 2.0929432
 Neighbor list builds = 105
 Dangerous builds = 0
-timestep 0.2
-run ${Ninptpre}
-run 10000
 PPPM initialization ...
   extracting TIP4P info from pair style
   using 12-bit tables for long-range coulomb (../kspace.cpp:342)
@@ -379,6 +233,10 @@ PPPM initialization ...
   using double precision KISS FFT
   3d grid and FFT values/proc = 4950 960
 Generated 0 of 15 mixed pair_coeff terms from arithmetic mixing rule
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 30000
+  Time step     : 0.2
 Per MPI rank memory allocation (min/avg/max) = 15.48 | 15.51 | 15.53 Mbytes
    Step        Density          Temp          Press          TotEng    
      30000   1.1916364      322.11866      1707.681      -30003.939    
@@ -421,9 +279,6 @@ Ave neighs/atom = 410.80092
 Ave special neighs/atom = 2.0929432
 Neighbor list builds = 260
 Dangerous builds = 0
-timestep 0.5
-run ${Ninptpre}
-run 10000
 PPPM initialization ...
   extracting TIP4P info from pair style
   using 12-bit tables for long-range coulomb (../kspace.cpp:342)
@@ -435,6 +290,10 @@ PPPM initialization ...
   using double precision KISS FFT
   3d grid and FFT values/proc = 4950 960
 Generated 0 of 15 mixed pair_coeff terms from arithmetic mixing rule
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 40000
+  Time step     : 0.5
 Per MPI rank memory allocation (min/avg/max) = 15.48 | 15.51 | 15.53 Mbytes
    Step        Density          Temp          Press          TotEng    
      40000   1.2022533      318.78764      1489.2611     -30445.849    
@@ -477,30 +336,9 @@ Ave neighs/atom = 407.25445
 Ave special neighs/atom = 2.0929432
 Neighbor list builds = 671
 Dangerous builds = 0
-reset_timestep 0
-
-# continuing the initialization with the final value of timestep
-unfix integrate
-fix integrate all rigid/npt/small molecule temp ${Temp} ${Temp} 100.0 iso ${Pres} ${Pres} 1000.0
-fix integrate all rigid/npt/small molecule temp 323.15 ${Temp} 100.0 iso ${Pres} ${Pres} 1000.0
-fix integrate all rigid/npt/small molecule temp 323.15 323.15 100.0 iso ${Pres} ${Pres} 1000.0
-fix integrate all rigid/npt/small molecule temp 323.15 323.15 100.0 iso 5 ${Pres} 1000.0
-fix integrate all rigid/npt/small molecule temp 323.15 323.15 100.0 iso 5 5 1000.0
   create bodies CPU = 0.000 seconds
   1162 rigid bodies with 3486 atoms
   1.4905044 = max distance from body owner to body atom
-
-timestep ${tstep}
-timestep 1
-
-# Dumping 20 snapshots over the run of this entire excercise
-dump trjectory all xyz ${Nd} movie.xyz
-dump trjectory all xyz 1000000 movie.xyz
-dump_modify trjectory element Ow H Li m S Os
-
-
-run ${Ninpt}
-run 10000000
 PPPM initialization ...
   extracting TIP4P info from pair style
   using 12-bit tables for long-range coulomb (../kspace.cpp:342)
@@ -512,6 +350,10 @@ PPPM initialization ...
   using double precision KISS FFT
   3d grid and FFT values/proc = 4950 960
 Generated 0 of 15 mixed pair_coeff terms from arithmetic mixing rule
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 0
+  Time step     : 1
 Per MPI rank memory allocation (min/avg/max) = 16.5 | 16.53 | 16.56 Mbytes
    Step        Density          Temp          Press          TotEng    
          0   1.1922046      323.18724      2476.3241     -30541.939    
@@ -10544,6 +10386,7 @@ Ave neighs/atom = 408.45267
 Ave special neighs/atom = 2.0929432
 Neighbor list builds = 1436945
 Dangerous builds = 0
-reset_timestep 0
 ERROR: Cannot reset timestep with active dump - must undump first (../output.cpp:637)
 Last command: reset_timestep 0
+srun: error: cmp076: tasks 0-31: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=2016067.0
