@@ -1,14 +1,15 @@
 #!/bin/bash
 N_wat=$(expr 1000)	# Number of water molecules
 N_salt=$(expr 18)	# Number of Li2SO4's per 1m solution
-n=$(expr 2)			# Number of Li's per salt molecule'
+n=$(expr 2)			# Number of Li's per salt molecule
+dt=$(expr 1)			# Timestepsize 1fs
 
 for Temp in 298.15 323.15
 do
 	mkdir temp_${Temp%.*}
 	cd temp_${Temp%.*}
 
-	for m in 1 2 3
+	for m in 3 2 1
 	do
 		mkdir molality_$m
 		cd molality_$m
@@ -26,6 +27,7 @@ do
 		randomNumber=$(shuf -i 1-100 -n1)
 		sed -i 's/R_VALUE/'$randomNumber'/' simulation_preprocessing.in
 		sed -i 's/T_VALUE/'$Temp'/' simulation_preprocessing.in
+		sed -i 's/dt_VALUE/'$dt'/' simulation_preprocessing.in
 
 		# Set runMD variables
 		sed -i 's/JOB_NAME/Li2SO4 T is '${Temp%.*}' m is'$m'/' runMD
