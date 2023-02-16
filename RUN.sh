@@ -1,6 +1,7 @@
 #!/bin/bash
 runfile=$(expr runMD_H)	# Server where to run
-Nrun=$(expr 2000000)			# 1*Nrun fs = 2 ns of data per step
+dt=$(expr 1)			# Timestepsize 1fs
+Nrun=$(expr 2000000)	# dt*Nrun = 2 ns of data per step
 Temp=$(expr 298.15)		# Temperature in K
 m=$(expr 3)				# Concentration file to use
 # How is it now?
@@ -25,6 +26,7 @@ do
 		randomNumber=$(shuf -i 1-100 -n1)
 		sed -i 's/R_VALUE/'$randomNumber'/' simulation.in
 		sed -i 's/T_VALUE/'$Temp'/' simulation.in
+		sed -i 's/dt_VALUE/'$dt'/' simulation.in
 		sed -i 's/Nrun_VALUE/'$Nrun'/' simulation.in
 
 		# Set filder location

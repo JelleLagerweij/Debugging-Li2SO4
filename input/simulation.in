@@ -10,7 +10,7 @@ variable Temp equal T_VALUE    # Temperature in K
 variable Pres equal 1.0       # Pressure in atm.
 
 variable RandomSeed equal R_VALUE # The random seed for velocity
-variable tstep equal 1.0      # 1fs 
+variable tstep equal dt_VALUE # 1fs 
 variable Ninvtpre equal 1000  # Pre-initialize the NVT ensemble (very small timesteps)
 variable Ninvt equal 100000   # Initialize the NVT ensemble (0.25 ns)
 variable Nrun equal Nrun_VALUE  # production in the NVT ensemble (Transport properties) 30 ns
