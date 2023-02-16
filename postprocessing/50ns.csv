@@ -1,0 +1,4 @@
+Legend,Volume/[m^3],Box size/[m],Temperature/[K],Number of wat,Number of S,Number of Li,Pressure/[Pa]
+Mean,3.28137e-26,3.201486939167541e-09,296.179752,1000.0,54.0,108.0,-332307.344451705
+std,0.0,0.0,0.039870414770854644,0.0,0.0,0.0,1606437.453958079
+# success,4.0,4.0,4.0,4.0,4.0,4.0,4.0

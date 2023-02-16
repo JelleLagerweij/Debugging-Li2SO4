@@ -16,7 +16,7 @@ plt.rcParams['svg.fonttype'] = 'none'
 
 
 class PP_OCTP:
-    def __init__(self, folder, f_runs, groups, plotting=False):
+    def __init__(self, folder, f_runs, groups, dt=1, plotting=False):
         """
         This class is used to postprocess octp output files and will average
         the results of multiple parallel runs if needed.
@@ -34,6 +34,9 @@ class PP_OCTP:
         groups : array of strings
             The array holds the names of the groups as defined for OCTP. The
             postprocessing is unsensitive to the order of these groups.
+        dt : float or integer
+            The timestep. Some lammps functions only record steps instead of
+            time, therefore a conversion has to be made.
         plotting : boolean, optional
             State if plots of the ordern data should be shown. The default is
             False.
@@ -67,6 +70,9 @@ class PP_OCTP:
 
         # Tool to keep consistent graph coloring
         self.cmap = plt.get_cmap("tab10")
+
+        # Setting the timestep
+        self.dt = dt
 
     def filenames(self, Default=False, density=False, volume=False,
                   total_E=False, poten_E=False, temperature=False,
@@ -228,7 +234,7 @@ class PP_OCTP:
         for i in range(len(self.f_runs)):
             t = np.array(pd.read_table(self.f_file[i]+self.f_T,
                                        delimiter=' ', header=None,
-                                       skiprows=2))[:, 0]
+                                       skiprows=2))[:, 0]*self.dt
             if t[-1] > T_min*1e6:
                 f_run.append(self.f_runs[i])
         print(len(f_run), 'statistically succesful runs for', self.f_folder)
@@ -294,7 +300,7 @@ class PP_OCTP:
             if self.plotting is True:
                 t = np.array(pd.read_table(self.f_file[i]+self.f_p,
                                            delimiter=' ', header=None,
-                                           skiprows=2))[:, 0]
+                                           skiprows=2))[:, 0]*self.dt
                 plt.figure('temperature')
                 plt.plot(t, T_i, marker=".", label=self.f_runs[i],
                          color=self.cmap(i))
@@ -366,7 +372,7 @@ class PP_OCTP:
             if self.plotting is True:
                 t = np.array(pd.read_table(self.f_file[i]+self.f_p,
                                            delimiter=' ', header=None,
-                                           skiprows=2))[:, 0]
+                                           skiprows=2))[:, 0]*self.dt
                 plt.figure('pressure')
                 plt.plot(t, p_i*co.atm, marker=".", label=self.f_runs[i],
                          color=self.cmap(i))
@@ -401,7 +407,7 @@ class PP_OCTP:
             if self.plotting is True:
                 t = np.array(pd.read_table(self.f_file[i]+self.f_totE,
                                            delimiter=' ', header=None,
-                                           skiprows=2))[:, 0]
+                                           skiprows=2))[:, 0]*self.dt
                 plt.figure('total energy')
                 plt.plot(t, E_i*fact, marker=".", label=self.f_runs[i],
                          color=self.cmap(i))
@@ -436,7 +442,7 @@ class PP_OCTP:
             if self.plotting is True:
                 t = np.array(pd.read_table(self.f_file[i]+self.f_totE,
                                            delimiter=' ', header=None,
-                                           skiprows=2))[:, 0]
+                                           skiprows=2))[:, 0]*self.dt
                 plt.figure('potential energy')
                 plt.plot(t, E_i*fact, marker=".", label=self.f_runs[i],
                          color=self.cmap(i))

@@ -10,14 +10,14 @@ variable Temp equal T_VALUE    # Temperature in K
 variable Pres equal 1.0       # Pressure in atm.
 
 variable RandomSeed equal R_VALUE # The random seed for velocity
-variable tstep equal 2.0      # 1fs 
+variable tstep equal 1.0      # 1fs 
 variable Ninvtpre equal 1000  # Pre-initialize the NVT ensemble (very small timesteps)
 variable Ninvt equal 100000   # Initialize the NVT ensemble (0.25 ns)
 variable Nrun equal Nrun_VALUE  # production in the NVT ensemble (Transport properties) 30 ns
 variable Nf equal 100000      # Nfreq (fix ave/time and thermo)
 variable Ne equal  1          # Nevery (fix ave/time)
 variable Nr equal ${Nf}/${Ne} # Nrepeat (fix ave/time)
-variable Nd equal ${Nrun}/10  # Frequency of outputting positions of atoms in the NVT ensemble
+variable Nd equal ${Nrun}/2   # Frequency of outputting positions of atoms in the NVT ensemble
 
 variable nb equal 10          # Number of blocks (fix ordern)
 variable nbe equal 20         # Number of block elements (fix ordern)
@@ -105,6 +105,9 @@ fix f3 all ordern thermalconductivity ${Ncond} ${Nwrit} c_heatflux nb ${nb} nbe 
 # computing the RDF for all group pairs
 compute rdfs all rdf/ext Nbin ${binnum} Nwrite ${Nrdfw}
 fix f4 all ave/time 1 1 ${Nrdfe} c_rdfs
+
+dump trjectory all xyz ${Nd} movie.xyz
+dump_modify trjectory element Ow H Li m S Os
 
 run ${Nrun}
 shell bash copy_files.sh 02ns
