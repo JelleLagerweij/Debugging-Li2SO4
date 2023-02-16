@@ -5,6 +5,9 @@ N_salt=$(expr 18)	# Number of Li2SO4's per 1m solution
 n=$(expr 2)			# Number of Li's per salt molecule
 dt=$(expr 1)			# Timestepsize 1fs
 
+cd input
+mkdir restarts
+cd restarts
 for Temp in 298.15 323.15
 do
 	mkdir temp_${Temp%.*}
@@ -16,13 +19,13 @@ do
 		cd molality_$m
 
 		# Coppying all needed files to run folder (alphabetical order)
-		cp ../../input/forcefield.data .
-		cp ../../input/Li.xyz .
-		cp ../../input/params.ff .
-		cp ../../input/$runfile runMD
-		cp ../../input/simulation_preprocessing.in .
-		cp ../../input/SO4.xyz .
-		cp ../../input/water.xyz .
+		cp ../../../forcefield.data .
+		cp ../../../Li.xyz .
+		cp ../../../params.ff .
+		cp ../../../$runfile runMD
+		cp ../../../simulation_preprocessing.in .
+		cp ../../../SO4.xyz .
+		cp ../../../water.xyz .
 
 		# Set simulation_preprocessing.in file values
 		randomNumber=$(shuf -i 1-100 -n1)
