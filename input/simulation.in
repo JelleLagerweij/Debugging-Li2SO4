@@ -17,7 +17,7 @@ variable Nrun equal Nrun_VALUE  # production in the NVT ensemble (Transport prop
 variable Nf equal 100000      # Nfreq (fix ave/time and thermo)
 variable Ne equal  1          # Nevery (fix ave/time)
 variable Nr equal ${Nf}/${Ne} # Nrepeat (fix ave/time)
-variable Nd equal ${Nrun}/2   # Frequency of outputting positions of atoms in the NVT ensemble
+variable Nd equal ${Nrun}/10  # Frequency of outputting positions of atoms in the NVT ensemble
 
 variable nb equal 10          # Number of blocks (fix ordern)
 variable nbe equal 20         # Number of block elements (fix ordern)

@@ -87,11 +87,6 @@ fix integrate all rigid/npt/small molecule temp ${Temp} ${Temp} 100.0 iso ${Pres
 
 timestep ${tstep}
 
-# Dumping 20 snapshots over the run of this entire excercise
-dump trjectory all xyz ${Nd} movie.xyz
-dump_modify trjectory element Ow H Li m S Os
-
-
 run ${Ninpt}
 reset_timestep 0
 
@@ -112,6 +107,12 @@ fix TempAve1 all ave/time 1 ${NBR} ${NBR} c_T1 file temperatureNPT.dat
 
 compute P1 all pressure T1
 fix PressAve1 all ave/time 1 ${NBR} ${NBR} c_P1 file pressureNPT.dat
+
+
+# Dumping 20 snapshots over the run of this entire excercise
+dump trjectory all xyz ${Nd} movie.xyz
+dump_modify trjectory element Ow H Li m S Os
+
 
 run ${Npnpt}
 

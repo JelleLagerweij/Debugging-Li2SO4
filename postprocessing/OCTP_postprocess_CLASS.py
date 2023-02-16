@@ -302,7 +302,7 @@ class PP_OCTP:
                                            delimiter=' ', header=None,
                                            skiprows=2))[:, 0]*self.dt
                 plt.figure('temperature')
-                plt.plot(t, T_i, marker=".", label=self.f_runs[i],
+                plt.plot(t, T_i, label=self.f_runs[i],
                          color=self.cmap(i))
 
         if self.plotting is True:
@@ -345,18 +345,28 @@ class PP_OCTP:
 
         self.mandatory_ran = True
 
-    def pressure(self):
+    def pressure(self, plotting=False, mov_ave=False):
         """
         OPTIONAL FUNCTION. The pressure is optimal and will not be reused. This
         function computes the average pressure and computes the mean and std
         of the system pressure during the OCTP sampling. This provides insight
         in the performance of the system. The pressure will be reported in Pa.
 
+        Parameters
+        ----------
+        plotting : boolean, optional
+            Set this specific property to plot. The default is False.
+        mov_ave : boolean or integer, optional
+            Use a moving average for filtering as a plotting tool. When mov_ave
+            is set to an integer, it will be the width of the moving average.
+            The default is False.
+
         Returns
         -------
         None.
 
         """
+
         # Run mandatory properties run if that has not occured yet.
         if self.mandatory_ran is False:
             self.mandatory_properties()
@@ -369,15 +379,21 @@ class PP_OCTP:
                                          skiprows=2))[:, 1]
             p_l[i] = unc.ufloat(np.mean(p_i)*co.atm, np.std(p_i)*co.atm)
 
-            if self.plotting is True:
+            if (self.plotting is True) or (plotting is True):
                 t = np.array(pd.read_table(self.f_file[i]+self.f_p,
                                            delimiter=' ', header=None,
                                            skiprows=2))[:, 0]*self.dt
-                plt.figure('pressure')
-                plt.plot(t, p_i*co.atm, marker=".", label=self.f_runs[i],
-                         color=self.cmap(i))
 
-        if self.plotting is True:
+                if mov_ave is not False:
+                    pdata = pd.DataFrame(p_i)
+                    p_plot = pdata.ewm(span=mov_ave).mean()*co.atm
+                else:
+                    p_plot = p_i*co.atm
+
+                plt.figure('pressure')
+                plt.plot(t, p_plot, label=self.f_runs[i], color=self.cmap(i))
+
+        if (self.plotting is True) or (plotting is True):
             plt.figure('pressure')
             plt.title('pressure')
             plt.grid('on')
@@ -389,7 +405,29 @@ class PP_OCTP:
         p_ave, p_sig = np.mean(p_l).n, np.mean(p_l).s
         self.results['Pressure/[Pa]'] = [p_ave, p_sig, len(self.f_file)]
 
-    def tot_energy(self, unit_conversion=4.184):
+    def tot_energy(self, plotting=False, mov_ave=False, unit_conversion=4.184):
+        """
+        OPTIONAL FUNCTION. The total energy function is optiomal and will not
+        be reused. This function computes the total system energy and stores
+         the results in [kJ].
+
+        Parameters
+        ----------
+        plotting : boolean, optional
+            Set this specific property to plot. The default is False.
+        mov_ave : boolean or integer, optional
+            Use a moving average for filtering as a plotting tool. When mov_ave
+            is set to an integer, it will be the width of the moving average.
+            The default is False.
+        unit_conversion : float, optional
+            Can be used to change units. In standard settings is converts kcal
+            to kJ from lammps units. The default is 4.184.
+
+        Returns
+        -------
+        None.
+
+        """
         fact = unit_conversion
 
         # Run mandatory properties run if that has not occured yet.
@@ -404,27 +442,55 @@ class PP_OCTP:
                                          skiprows=2))[:, 1]
             E_l[i] = unc.ufloat(np.mean(E_i)*fact, np.std(E_i)*fact)
 
-            if self.plotting is True:
+            if (self.plotting is True) or (plotting is True):
                 t = np.array(pd.read_table(self.f_file[i]+self.f_totE,
                                            delimiter=' ', header=None,
                                            skiprows=2))[:, 0]*self.dt
-                plt.figure('total energy')
-                plt.plot(t, E_i*fact, marker=".", label=self.f_runs[i],
-                         color=self.cmap(i))
 
-        if self.plotting is True:
+                if mov_ave is not False:
+                    Edata = pd.DataFrame(E_i)
+                    E_plot = Edata.ewm(span=mov_ave).mean()*fact
+                else:
+                    E_plot = E_i*fact
+
+                plt.figure('total energy')
+                plt.plot(t, E_plot, label=self.f_runs[i], color=self.cmap(i))
+
+        if (self.plotting is True) or (plotting is True):
             plt.figure('total energy')
             plt.title('total energy')
             plt.grid('on')
-            plt.ylabel('total energy/(kJ/mol)')
+            plt.ylabel('total energy/(kJ)')
             plt.xlabel('time in fs')
             plt.legend()
 
         # Computing total mean and handling uncertainties correctly.
         E_ave, E_sig = np.mean(E_l).n, np.mean(E_l).s
-        self.results['Tot Energy/[kJ/mol]'] = [E_ave, E_sig, len(self.f_file)]
+        self.results['Tot Energy/[kJ]'] = [E_ave, E_sig, len(self.f_file)]
 
-    def pot_energy(self, unit_conversion=4.184):
+    def pot_energy(self, plotting=False, mov_ave=False, unit_conversion=4.184):
+        """
+        OPTIONAL FUNCTION. The potential energy function is optiomal and will
+        not be reused. This function computes the potential system energy and
+        stores the results in [kJ].
+
+        Parameters
+        ----------
+        plotting : boolean, optional
+            Set this specific property to plot. The default is False.
+        mov_ave : boolean or integer, optional
+            Use a moving average for filtering as a plotting tool. When mov_ave
+            is set to an integer, it will be the width of the moving average.
+            The default is False.
+        unit_conversion : float, optional
+            Can be used to change units. In standard settings is converts kcal
+            to kJ from lammps units. The default is 4.184.
+
+        Returns
+        -------
+        None.
+
+        """
         fact = unit_conversion
 
         # Run mandatory properties run if that has not occured yet.
@@ -439,25 +505,31 @@ class PP_OCTP:
                                          skiprows=2))[:, 1]
             E_l[i] = unc.ufloat(np.mean(E_i)*fact, np.std(E_i)*fact)
 
-            if self.plotting is True:
+            if (self.plotting is True) or (plotting is True):
                 t = np.array(pd.read_table(self.f_file[i]+self.f_totE,
                                            delimiter=' ', header=None,
                                            skiprows=2))[:, 0]*self.dt
-                plt.figure('potential energy')
-                plt.plot(t, E_i*fact, marker=".", label=self.f_runs[i],
-                         color=self.cmap(i))
 
-        if self.plotting is True:
+                if mov_ave is not False:
+                    Edata = pd.DataFrame(E_i)
+                    E_plot = Edata.ewm(span=mov_ave).mean()*fact
+                else:
+                    E_plot = E_i*fact
+
+                plt.figure('potential energy')
+                plt.plot(t, E_plot, label=self.f_runs[i], color=self.cmap(i))
+
+        if (self.plotting is True) or (plotting is True):
             plt.figure('potential energy')
             plt.title('potential energy')
             plt.grid('on')
-            plt.ylabel('potential energy/(kJ/mol)')
+            plt.ylabel('potential energy/(kJ)')
             plt.xlabel('time in fs')
             plt.legend()
 
         # Computing total mean and handling uncertainties correctly.
         E_ave, E_sig = np.mean(E_l).n, np.mean(E_l).s
-        self.results['Potential Energy/[kJ/mol]'] = [E_ave, E_sig,
+        self.results['Potential Energy/[kJ]'] = [E_ave, E_sig,
                                                      len(self.f_file)]
 
     def density(self, unit_conversion=1000):
@@ -560,11 +632,16 @@ class PP_OCTP:
         # Storing the result in dataframe.
         self.results['Molality/[mol/kg]'] = [m, 0, len(self.f_file)]
 
-    def viscosity(self):
+    def viscosity(self, plotting=False):
         """
         OPTIONAL FUNCTION: The viscosy is optional, however, it computes data
         mandatory for the finite size corrections for the self diffusion
         coefficients. The viscosity will be returned in Pa*s.
+
+        Parameters
+        ----------
+        plotting : boolean, optional
+            Set this specific property to plot. The default is False.
 
         Returns
         -------
@@ -589,7 +666,7 @@ class PP_OCTP:
             D, t_fit, fit = self.diff_calculator(t, msd_all)
             visc[i] = D*fact
             # Plot if asked for.
-            if self.plotting is True:
+            if (self.plotting is True) or (plotting is True):
                 plt.figure('viscosity shear')
                 plt.loglog(t, np.abs(msd_all)*fact, marker=".",
                            label=self.f_runs[i], color=self.cmap(i))
@@ -600,13 +677,13 @@ class PP_OCTP:
             D, t_fit, fit = self.diff_calculator(t, msd_bulk)
             visc_bulk[i] = D*fact
             # Plot if asked for.
-            if self.plotting is True:
+            if (self.plotting is True) or (plotting is True):
                 plt.figure('viscosity bulk')
                 plt.loglog(t, np.abs(msd_bulk)*fact, marker=".",
                            label=self.f_runs[i], color=self.cmap(i))
                 plt.loglog(t_fit, fit*fact, ':', color=self.cmap(i))
 
-        if self.plotting is True:
+        if (self.plotting is True) or (plotting is True):
             plt.figure('viscosity shear')
             plt.title('viscosity shear')
             plt.grid('on')
@@ -629,10 +706,15 @@ class PP_OCTP:
         visc_bulk = self.repacking_results(visc_bulk)
         self.results['Viscosity bulk/[Pa*s]'] = visc_bulk
 
-    def thermal_conductivity(self):
+    def thermal_conductivity(self, plotting=False):
         """
         OPTIONAL FUNCTION: The themal conductivity is optional and will be
         returned in units of W/(m*K).
+
+        Parameters
+        ----------
+        plotting : boolean, optional
+            Set this specific property to plot. The default is False.
 
         Returns
         -------
@@ -657,14 +739,14 @@ class PP_OCTP:
             T_conb[i] = D*fact
 
             # Plotting if asked for.
-            if self.plotting is True:
+            if (self.plotting is True) or (plotting is True):
                 plt.figure('thermal conductivity')
                 plt.loglog(t, np.abs(msd_all)*fact, marker=".",
                            label=self.f_runs[i], color=self.cmap(i))
                 plt.loglog(t_fit, fit*fact, ':', color=self.cmap(i))
 
         # Plotting if asked for.
-        if self.plotting is True:
+        if (self.plotting is True) or (plotting is True):
             plt.figure('thermal conductivity')
             plt.title('thermal conductivity')
             plt.grid('on')
@@ -676,7 +758,8 @@ class PP_OCTP:
         T_con = self.repacking_results(T_con)
         self.results['Thermal conductivity/[W/(m*K)]'] = T_con
 
-    def self_diffusivity(self, YH_correction=False, box_size_check=False):
+    def self_diffusivity(self, YH_correction=False, box_size_check=False,
+                         plotting=False):
         """
         OPTIONAL FUNCTION: The self-diffusion coefficients of the independent
         species are computed in m^2/s.
@@ -693,6 +776,10 @@ class PP_OCTP:
             Turns on the comparison between the box size and the length scales
             of the selected fits. If the length scales are smaller than the box
             size, a warning is raised, however, the computations continue.
+
+        plotting : boolean, optional
+            Set this specific property to plot. The default is False.
+
         Returns
         -------
         None.
@@ -736,14 +823,14 @@ class PP_OCTP:
                 D_s[i] += D_YH[i]  # adds 0 if no correction is needed
 
                 # Plotting if asked for.
-                if self.plotting is True:
+                if (self.plotting is True) or (plotting is True):
                     plt.figure('D_self '+self.groups[j])
                     plt.loglog(t, selfdif*fact, marker=".",
                                label=self.f_runs[i], color=self.cmap(i))
                     plt.loglog(t_fit, fit*fact, ':', color=self.cmap(i))
 
             # Plotting if asked for.
-            if self.plotting is True:
+            if (self.plotting is True) or (plotting is True):
                 plt.figure('D_self ' + self.groups[j])
                 plt.grid('on')
                 plt.title('D_self ' + self.groups[j])
@@ -759,7 +846,7 @@ class PP_OCTP:
             D_self = self.repacking_results(D_s)
             self.results[words] = D_self
 
-    def onsager_coeff(self, box_size_check=False):
+    def onsager_coeff(self, box_size_check=False, plotting=False):
         """
         OPTIONAL FUNCTION: The Onsager Coefficients of the independent species
         interactions are computed in m^2/s.
@@ -770,6 +857,9 @@ class PP_OCTP:
             Turns on the comparison between the box size and the length scales
             of the selected fits. If the length scales are smaller than the box
             size, a warning is raised, however, the computations continue.
+
+        plotting : boolean, optional
+            Set this specific property to plot. The default is False.
 
         Returns
         -------
@@ -812,7 +902,7 @@ class PP_OCTP:
                     D_O[k] = D*fact
 
                     # Plotting if asked for.
-                    if self.plotting is True:
+                    if (self.plotting is True) or (plotting is True):
                         plt.figure('D_Onsag '+self.groups[i] + ' ' +
                                    self.groups[j+i])
                         plt.loglog(t, np.abs(diff)*fact,  marker=".",
@@ -820,7 +910,7 @@ class PP_OCTP:
                         plt.loglog(t_fit, fit*fact, ':', color=self.cmap(k))
 
                 # Plotting if asked for.
-                if self.plotting is True:
+                if (self.plotting is True) or (plotting is True):
                     plt.figure('D_Onsag '+self.groups[i] + ' ' +
                                self.groups[j+i])
                     plt.title('D_Onsag '+self.groups[i] + ' ' +
