@@ -1,4 +1,5 @@
 #!/bin/bash
+runfile=$(expr runMD_D)	# Server where to run
 N_wat=$(expr 1000)	# Number of water molecules
 N_salt=$(expr 18)	# Number of Li2SO4's per 1m solution
 n=$(expr 2)			# Number of Li's per salt molecule
@@ -18,7 +19,7 @@ do
 		cp ../../input/forcefield.data .
 		cp ../../input/Li.xyz .
 		cp ../../input/params.ff .
-		cp ../../input/runMD .
+		cp ../../input/$runfile runMD
 		cp ../../input/simulation_preprocessing.in .
 		cp ../../input/SO4.xyz .
 		cp ../../input/water.xyz .
